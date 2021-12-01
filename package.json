@@ -1,0 +1,24 @@
+{
+  "name": "near-failover",
+  "version": "1.0.0",
+  "description": "failover scripts",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TrevorJTClarke/near-failover.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TrevorJTClarke/near-failover/issues"
+  },
+  "homepage": "https://github.com/TrevorJTClarke/near-failover#readme",
+  "dependencies": {
+    "axios": "^0.24.0",
+    "dotenv": "^10.0.0",
+    "near-api-js": "^0.43.1"
+  }
+}
