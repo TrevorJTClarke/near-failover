@@ -1,13 +1,17 @@
+require("dotenv").config()
 const axios = require('axios')
+
+const defaultChannel = process.env.SLACK_CHANNEL || 'general'
+const defaultToken = process.env.SLACK_TOKEN
 
 class Slack {
   constructor(options) {
-    this.slackToken = options.slackToken
+    this.slackToken = options.slackToken || defaultToken
     return this
   }
 
   getHookUrl(options) {
-    if (!options || !options.slackToken) return
+    if (!options || !options.slackToken && !defaultToken) return
     const id = options.slackToken || this.slackToken
     return `https://hooks.slack.com/services/${id}`
   }
@@ -16,7 +20,7 @@ class Slack {
     const url = this.getHookUrl(options)
     if (!url) return
     const data = {
-      channel: options.slackChannel ? `#${options.slackChannel}` : '#general',
+      channel: options.slackChannel ? `#${options.slackChannel}` : defaultChannel || '#general',
       username: 'Steak.Town',
       // Example: 'Alert! You need to do something! <https://url.com|Click here>'
       text: options.text || 'Steak.Town Update!',

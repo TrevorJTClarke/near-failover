@@ -17,9 +17,18 @@ const cmdPromise = (cmd, cwd = process.cwd()) => {
   })
 }
 
+const getLogs = async (lines = 1) => {
+  const cmd = NEAR_ENV === 'mainnet' ? `tail -n ${lines} ~/.near/neard.log` : `tail -n ${lines} ~/.nearup/logs/${NEAR_ENV}.log`
+  try {
+    let logs = await cmdPromise(cmd)
+    return logs
+  } catch (e) {
+    // do nuthin
+  }
+}
 
 module.exports = {
-  stopNearDaemon: async () => {
+  stop: async () => {
     const cmd = NEAR_ENV === 'mainnet' ? 'sudo systemctl stop neard' : 'nearup stop'
     try {
       await cmdPromise(cmd)
@@ -28,7 +37,7 @@ module.exports = {
       // TODO: slask
     }
   },
-  startNearDaemon: async () => {
+  start: async () => {
     const cmd = NEAR_ENV === 'mainnet' ? 'sudo systemctl start neard' : 'nearup run $NEAR_ENV --accountId $NEAR_ACCOUNT --home /data'
     try {
       await cmdPromise(cmd)
@@ -37,13 +46,25 @@ module.exports = {
       // TODO: slask
     }
   },
-  getNearDaemonLogs: async (lines = 1) => {
-    const cmd = NEAR_ENV === 'mainnet' ? `journalctl -n ${lines} -u neard` : `tail -n ${lines} ~/.nearup/logs/${NEAR_ENV}.log`
-    try {
-      let logs = await cmdPromise(cmd)
-      return logs
-    } catch(e) {
-      // do nuthin
-    }
+  getLogs,
+  parseLogs: async (lines = 1) => {
+    const logs = await getLogs(lines)
+    const output = []
+    
+    // split the logs up into line objects based on output
+    logs.split('\n').forEach(line => {
+      const chunks = line.split('  ')
+      const blockData = chunks[1].split(' ')
+      const peerData = chunks[2].split(' ')
+      output.push({
+        timestamp: chunks[0],
+        block: `${blockData[2]}`.replace('#', ''),
+        blockHash: blockData[3],
+        is_validating: `${blockData[4]}`[0] === 'V',
+        peers: `${peerData[0]}`.split('/'),
+      })
+    })
+
+    return output
   },
 }

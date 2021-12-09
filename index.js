@@ -1,8 +1,10 @@
 require("dotenv").config()
 const axios = require("axios")
-const ip = require("./ip")
 const slack = require("./slack")
 const uptime = require("./uptime")
+const ip = require("./ip")
+const keys = require("./keyHandler")
+const daemon = require("./daemonHandler")
 
 const NEAR_ENV = process.env.NEAR_ENV || 'testnet'
 const NODES = {
@@ -23,12 +25,27 @@ const configuredNodes = [NF_NODES[NEAR_ENV]]
 // Add locally known nodes to the list to check
 if (NODES[NEAR_ENV]) NODES[NEAR_ENV].split(',').forEach(node => configuredNodes.push(node))
 
-function changeNodeToPrimary() {}
+// Restart changes the node from either validating to non-validating
+// This is done by switching which keys are active
+// OPTIONS:
+// - type: {temp, main}(default: temp)
+async function restartNodeProcess(type = 'temp') {
+  // stop process
+  await daemon.stop()
 
-function changeNodeToStandby() {}
+  // TODO: Error handle this!
+  // replace keys
+  await keys[type]()
 
-// GOOOOOO!!
-;(async () => {
+  // start process
+  await daemon.start()
+
+  // report
+  await slack.send({ text: `*${NEAR_ENV.toUpperCase()}* node changed to ${type} (${ip()})` })
+}
+
+// The main logic to check THIS node against comparison nodes
+async function checkNodeState() {
   // Get all available nodes, by requesting their "height"
   const p = []
   configuredNodes.forEach(node => {
@@ -60,6 +77,10 @@ function changeNodeToStandby() {}
   })
 
   console.log('nodes', nodes)
+  const thisNode = { ip: ip(), key_is_primary: keys.isMain() }
+  const latestLogs = daemon.parseLogs()
+  thisNode.log = latestLogs && latestLogs.length > 0 ? latestLogs[0] : null
+  console.log('thisNode', thisNode)
 
   // Check the last known primary node is actively validating
 
@@ -77,4 +98,10 @@ function changeNodeToStandby() {}
   //   - alert if we know this node is falling behind
   //   - alert if we are losing peers
   // - send periodic state updates to slack
+}
+
+// GOOOOOO!!
+;(async () => {
+  // TODO: Change to recursive interval setup
+  await checkNodeState()
 })()
