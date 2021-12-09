@@ -4,6 +4,7 @@
   "description": "failover scripts",
   "main": "index.js",
   "scripts": {
+    "start": "node index",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,6 +20,6 @@
   "dependencies": {
     "axios": "^0.24.0",
     "dotenv": "^10.0.0",
-    "near-api-js": "^0.43.1"
+    "near-api-js": "^0.44.1"
   }
 }
