@@ -59,6 +59,7 @@ async function checkNodeState() {
   let thisNode = { ip: ip(), key_is_primary: keys.isMain() }
   const latestLogs = daemon.parseLogs()
   thisNode.log = latestLogs && latestLogs.length > 0 ? latestLogs[0] : null
+  console.log('thisNode', thisNode)
 
   // Get all available nodes info
   const p = []
@@ -91,7 +92,7 @@ async function checkNodeState() {
       is_primary: res.validator_account_id.search('sync') < 0,
     }
 
-    if (nIp === thisNode.ip) thisNode = { ...thisNode, ...nodeInfo }
+    if (res.node === thisNode.ip) thisNode = { ...thisNode, ...nodeInfo }
     else if (res.node = NF_NODES[NEAR_ENV]) nfNodes[res.node] = nodeInfo
     else nodes[res.node] = nodeInfo
   })
