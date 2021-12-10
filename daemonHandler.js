@@ -28,6 +28,16 @@ const getLogs = async (lines = 1) => {
 }
 
 module.exports = {
+  // TODO: grep?
+  processActive: async () => {
+    const cmd = NEAR_ENV === 'mainnet' ? 'sudo systemctl stop neard' : 'nearup stop'
+    try {
+      await cmdPromise(cmd)
+    } catch(e) {
+      // fire a notif to slack
+      // TODO: slask
+    }
+  },
   stop: async () => {
     const cmd = NEAR_ENV === 'mainnet' ? 'sudo systemctl stop neard' : 'nearup stop'
     try {
