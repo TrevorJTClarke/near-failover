@@ -1,7 +1,7 @@
 const fs = require("fs")
 const path = require("path")
 
-const BASE_PATH = path.join(__dirname, '/data')
+const BASE_PATH = path.join('/data')
 
 const getKeyData = async (type = 'validator', suffix = '') => {
   const validatorKey = await fs.readFileSync(path.join(BASE_PATH, `${type}_key${suffix}.json`), 'utf8')
