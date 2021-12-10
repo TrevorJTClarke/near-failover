@@ -60,6 +60,7 @@ module.exports = {
   parseLogs: async (lines = 1) => {
     const logs = await getLogs(lines)
     const output = []
+    if (!logs || logs.length < 1) return output;
     
     // split the logs up into line objects based on output
     logs.split('\n').forEach(line => {
