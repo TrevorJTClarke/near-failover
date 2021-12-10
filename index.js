@@ -1,6 +1,6 @@
 require("dotenv").config()
 const axios = require("axios")
-const slack = require("./slack")
+const slackProvider = require("./slack")
 const uptime = require("./uptime")
 const ip = require("./ip")
 const keys = require("./keyHandler")
@@ -13,6 +13,8 @@ const LOW_PEER_THRESHOLD = process.env.LOW_PEER_THRESHOLD ? parseInt(process.env
 const UPTIME_SYSTEM_URL = process.env.UPTIME_SYSTEM_URL
 const UPTIME_SYNC_URL = process.env.UPTIME_SYNC_URL
 const SLACK_STATUS_INTERVAL = process.env.SLACK_STATUS_INTERVAL ? parseInt(process.env.SLACK_STATUS_INTERVAL) : 60 * 60 * 1000
+
+const slack = new slackProvider({ slackToken: process.env.SLACK_TOKEN })
 
 const NODES = {
   mainnet: process.env.NODES_MAINNET,
@@ -56,7 +58,9 @@ async function restartNodeProcess(type = 'temp') {
 // The main logic to check THIS node against comparison nodes
 async function checkNodeState() {
   // Get the context of THIS node for later comparison.
-  let thisNode = { ip: ip(), key_is_primary: keys.isMain() }
+  const key_is_primary = await keys.isMain()
+  const thisNodeIp = await ip()
+  let thisNode = { ip: thisNodeIp, key_is_primary }
   const latestLogs = daemon.parseLogs()
   thisNode.log = latestLogs && latestLogs.length > 0 ? latestLogs[0] : null
   console.log('thisNode', thisNode)
