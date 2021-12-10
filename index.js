@@ -152,6 +152,10 @@ async function checkNodeState() {
 
 // GOOOOOO!!
 ;(async () => {
-  // TODO: Change to recursive interval setup
-  await checkNodeState()
+  const recurse = async () => {
+    await checkNodeState()
+    setTimeout(recurse, CHECK_INTERVAL)
+  }
+
+  recurse()
 })()

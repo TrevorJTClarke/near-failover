@@ -1,0 +1,19 @@
+[Unit]
+Description=NEAR Failover Daemon
+
+[Service]
+Type=simple
+User=near
+Group=near
+WorkingDirectory=/home/near/near-failover
+ExecStart=npm start
+StandardOutput=file:/home/near/near-failover/failover.log
+StandartError=file:/home/near/near-failover/failovererror.log
+Restart=on-failure
+RestartSec=30
+KillSignal=SIGINT
+TimeoutStopSec=45
+KillMode=mixed
+
+[Install]
+WantedBy=multi-user.target
