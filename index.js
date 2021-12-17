@@ -70,7 +70,7 @@ async function checkNodeState() {
   // Get all available nodes info
   // TODO: Skip if its requesting THIS node???
   const p = []
-  configuredNodes.forEach(node => p.push(nodeStatus(node)))
+  configuredNodes.forEach(node => p.push(nodeStatus.getState(node)))
   const results = await Promise.all(p)
   const nfNodes = {}
   const nodes = {}
