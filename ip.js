@@ -4,7 +4,6 @@ const { networkInterfaces } = require('os');
 module.exports = function() {
   const nets = networkInterfaces()
   const results = {}
-  console.log('nets', nets)
 
   for (const name of Object.keys(nets)) {
     for (const net of nets[name]) {
@@ -17,7 +16,12 @@ module.exports = function() {
       }
     }
   }
-  console.log('networkInterfaces results', results)
+
+  const ips = []
+  Object.keys(results).forEach(r => {
+    if (r.search('ens') > -1 && results[r].length > 0) ips.push(results[r][0])
+  })
+  console.log('networkInterfaces results', ips)
   
-  return results.en0 && results.en0[0] ? results.en0[0] : ''
+  return ips[0] ? ips[0] : ''
 }

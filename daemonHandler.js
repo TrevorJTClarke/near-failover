@@ -9,31 +9,9 @@ const isMainnet = NEAR_ENV === 'mainnet'
 const REGION = process.env.REGION || ''
 const slack = new slackProvider({ slackToken: process.env.SLACK_TOKEN })
 
-// // Example use:
-// // cmdPromise(path.resolve(process.argv[2]) || process.cwd())
-// const cmdPromise = (cmd, cwd = process.cwd()) => {
-//   if (!cmd) return Promise.reject('No cmd')
-//   return new Promise((resolve, reject) => {
-//     let check = exec(cmd, { cwd });
-//     check.on('exit', code => {
-//       if (code === 0) resolve()
-//       else reject()
-//     })
-//   })
-// }
-
 const getLogs = async (lines = 1) => {
   const cmd = isMainnet ? `tail -n ${lines} ~/.near/neard.log` : `tail -n ${lines} ~/.nearup/logs/${NEAR_ENV}.log`
-  // try {
-  //   let logs = await cmdPromise(cmd)
-  //   console.log('RAW logs', cmd, logs)
-  //   return logs
-  // } catch (e) {
-  //   // do nuthin
-  // }
-  const { stdout, stderr } = await exec(cmd)
-  console.log('stdout:', stdout)
-  console.error('stderr:', stderr)
+  const { stdout } = await exec(cmd)
   return stdout
 }
 

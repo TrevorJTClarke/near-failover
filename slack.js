@@ -22,6 +22,7 @@ class Slack {
     const data = {
       channel: options.slackChannel ? `#${options.slackChannel}` : defaultChannel || '#general',
       username: 'Steak.Town',
+      icon_emoji: ':cut_of_meat:',
       // Example: 'Alert! You need to do something! <https://url.com|Click here>'
       text: options.text || 'Steak.Town Update!',
       ...options,
