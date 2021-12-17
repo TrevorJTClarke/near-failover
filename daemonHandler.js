@@ -36,7 +36,7 @@ module.exports = {
     }
   },
   start: async () => {
-    const cmd = isMainnet ? 'sudo systemctl start neard' : 'nearup run $NEAR_ENV --home /data'
+    const cmd = isMainnet ? 'sudo systemctl start neard' : `nearup run ${NEAR_ENV} --home /data`
     try {
       // TODO: re-enable!!!!!!!!!!!!!!!
       // await cmdPromise(cmd)

@@ -53,7 +53,7 @@ async function restartNodeProcess(type = 'temp') {
   await daemon.start()
 
   // report
-  await slack.send({ text: `*${NEAR_ENV.toUpperCase()} ${REGION}* node changed to ${type} complete. (${ip()})` })
+  await slack.send({ text: `*${NEAR_ENV.toUpperCase()} ${REGION}* node changed to ${type} complete.` })
 }
 
 // The main logic to check THIS node against comparison nodes
@@ -154,18 +154,18 @@ async function checkNodeState() {
   }
 
   // Ping Uptime Monitor
-  if (UPTIME_SYSTEM_URL) uptime.ping({ uptimeUrl: UPTIME_SYSTEM_URL })
-
-  // - send periodic state updates to slack?
+  // if (UPTIME_SYSTEM_URL) uptime.ping({ uptimeUrl: UPTIME_SYSTEM_URL })
 }
 
 // GOOOOOO!!
 ;(async () => {
-  console.log("IP", ip());
   const recurse = async () => {
+    console.log('STARTING CHECK NODE........')
     await checkNodeState()
     setTimeout(recurse, CHECK_INTERVAL)
   }
+
+  // - send periodic state updates to slack?
 
   recurse()
 })()
