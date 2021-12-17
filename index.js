@@ -77,7 +77,6 @@ async function checkNodeState() {
     }))
   })
   const results = await Promise.all(p)
-  console.log('results', results)
   const nfNodes = {}
   const nodes = {}
 
@@ -85,6 +84,7 @@ async function checkNodeState() {
   results.forEach(res => {
     if (!res || !res.version) return;
     if (res.chain_id !== NEAR_ENV) return;
+    console.log('res', res)
     const validator_account_id = res.validator_account_id
     let is_primary = false
 
@@ -113,6 +113,7 @@ async function checkNodeState() {
   })
 
   console.log('nodes', nodes)
+  console.log('nfNodes', nfNodes)
   console.log('thisNode', thisNode)
 
   // TODO: Check if neard/nearup process is active?
