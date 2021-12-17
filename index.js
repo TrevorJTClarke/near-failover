@@ -83,7 +83,6 @@ async function checkNodeState() {
   results.forEach(res => {
     if (!res || !res.version) return;
     if (res.chain_id !== NEAR_ENV) return;
-    console.log('res', res)
     const validator_account_id = res.validator_account_id
     let is_primary = false
 
@@ -105,6 +104,8 @@ async function checkNodeState() {
       is_primary,
       is_syncing: res.sync_info.syncing,
     }
+
+    console.log('res.node === thisNode.ip', res.node === thisNode.ip, res.node, thisNode.ip, is_primary)
 
     if (res.node === thisNode.ip) thisNode = { ...thisNode, ...nodeInfo }
     else if (res.node = NF_NODES[NEAR_ENV]) nfNodes[res.node] = nodeInfo
