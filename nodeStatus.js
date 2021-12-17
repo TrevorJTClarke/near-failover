@@ -10,7 +10,6 @@ module.exports = {
     
     try {
       const res = await axios.get(`${node_domain}status`).then(r => r.data)
-      console.log('STATUS', res)
 
       if (!res || !res.version) return;
       if (res.chain_id !== NEAR_ENV) return;
@@ -25,7 +24,7 @@ module.exports = {
       nodeInfo = {
         ...nodeInfo,
         ...res.sync_info,
-        node: res.node,
+        node,
         validator_account_id,
         version: res.version,
         chain_id: res.chain_id,
@@ -39,13 +38,11 @@ module.exports = {
       }
     } catch (e) {
       // Could not get basics
-      console.log('HERE', e)
     }
     
     // Add context for peers
     try {
       const metrics = await axios.get(`${node_domain}metrics`).then(r => r.data)
-      console.log('METRICS', metrics)
       const mLines = metrics.split('\n')
       mLines.forEach(l => {
         if (l.search('\#') < 0) {
@@ -59,7 +56,6 @@ module.exports = {
       })
     } catch (e) {
       // nothing
-      console.log('HERE', e)
     }
 
     return nodeInfo
