@@ -1,5 +1,4 @@
 require("dotenv").config()
-const axios = require("axios")
 const slackProvider = require("./slack")
 const uptime = require("./uptime")
 const ip = require("./ip")

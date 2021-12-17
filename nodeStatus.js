@@ -1,4 +1,5 @@
 require("dotenv").config()
+const axios = require("axios")
 
 const NEAR_ENV = process.env.NEAR_ENV || 'testnet'
 
