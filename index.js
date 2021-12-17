@@ -107,11 +107,11 @@ async function checkNodeState() {
 
     console.log('res.node === thisNode.ip', res.node === thisNode.ip, res.node, thisNode.ip, is_primary)
 
-    if (res.node === thisNode.ip) thisNode = { ...thisNode, ...nodeInfo }
-    else if (res.node = NF_NODES[NEAR_ENV]) nfNodes[res.node] = nodeInfo
+    if (res.node = NF_NODES[NEAR_ENV]) nfNodes[res.node] = nodeInfo
+    else if (res.node === thisNode.ip) thisNode = { ...thisNode, ...nodeInfo }
     else {
       console.log('HERE-------------', res.node, nodeInfo)
-      nodes[res.node] = nodeInfo
+      nodes[res.node] = { ...nodeInfo }
     }
   })
 
