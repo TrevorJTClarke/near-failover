@@ -1,12 +1,9 @@
 const axios = require('axios')
 
-class Uptime {
-  constructor(options) {
-    return this
-  }
+const uptime = {
   ping(options = {}) {
     return axios.get(options.uptimeUrl)
   }
 }
 
-module.exports = Uptime
+module.exports = uptime

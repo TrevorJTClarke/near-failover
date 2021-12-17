@@ -21,6 +21,7 @@ const getLogs = async (lines = 1) => {
   const cmd = NEAR_ENV === 'mainnet' ? `tail -n ${lines} ~/.near/neard.log` : `tail -n ${lines} ~/.nearup/logs/${NEAR_ENV}.log`
   try {
     let logs = await cmdPromise(cmd)
+    console.log('RAW logs', logs)
     return logs
   } catch (e) {
     // do nuthin

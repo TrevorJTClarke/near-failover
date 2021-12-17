@@ -63,9 +63,10 @@ async function checkNodeState() {
   let thisNode = { ip: thisNodeIp, key_is_primary }
   const latestLogs = daemon.parseLogs()
   thisNode.log = latestLogs && latestLogs.length > 0 ? latestLogs[0] : null
-  console.log('thisNode', thisNode)
+  console.log('checkNodeState', thisNode)
 
   // Get all available nodes info
+  // TODO: Skip if its requesting THIS node???
   const p = []
   configuredNodes.forEach(node => {
     const url = node.search('192') < 0 ? `https://${node}/status` : `http://${node}:3030/status`
