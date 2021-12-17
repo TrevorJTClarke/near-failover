@@ -64,9 +64,7 @@ async function checkNodeState() {
   const thisNodeIp = await ip()
   let thisNode = { ip: thisNodeIp, key_is_primary }
   const latestLogs = await daemon.parseLogs()
-  console.log('latestLogs', latestLogs)
   thisNode.log = latestLogs && latestLogs.length > 0 ? latestLogs[0] : null
-  console.log('checkNodeState', thisNode)
 
   // Get all available nodes info
   // TODO: Skip if its requesting THIS node???
@@ -79,6 +77,7 @@ async function checkNodeState() {
     }))
   })
   const results = await Promise.all(p)
+  console.log('results', results)
   const nfNodes = {}
   const nodes = {}
 
