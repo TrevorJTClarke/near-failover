@@ -3,6 +3,7 @@ const axios = require("axios")
 const slackProvider = require("./slack")
 const uptime = require("./uptime")
 const ip = require("./ip")
+const nodeStatus = require("./nodeStatus")
 const keys = require("./keyHandler")
 const daemon = require("./daemonHandler")
 
@@ -56,6 +57,7 @@ async function restartNodeProcess(type = 'temp') {
   await slack.send({ text: `*${NEAR_ENV.toUpperCase()} ${REGION}* node changed to ${type} complete.` })
 }
 
+// TODO: Check that logic can sustain all nodes not validating because of kicked or non-ping
 // The main logic to check THIS node against comparison nodes
 async function checkNodeState() {
   // Get the context of THIS node for later comparison.
@@ -68,63 +70,31 @@ async function checkNodeState() {
   // Get all available nodes info
   // TODO: Skip if its requesting THIS node???
   const p = []
-  configuredNodes.forEach(node => {
-    const url = node.search('192') < 0 ? `https://${node}/status` : `http://${node}:3030/status`
-    p.push(axios.get(url).then(res => {
-      return { ...res.data, node }
-    }))
-  })
+  configuredNodes.forEach(node => p.push(nodeStatus(node)))
   const results = await Promise.all(p)
   const nfNodes = {}
   const nodes = {}
 
   // based on responses, add to available nodes list
   results.forEach(res => {
-    if (!res || !res.version) return;
-    if (res.chain_id !== NEAR_ENV) return;
+    console.log('res', res)
     const node_ip = res.node
-    console.log('NODE: ', node_ip)
-    const validator_account_id = res.validator_account_id
-    let is_primary = false
-
-    // check all validators to see if THIS account is validating
-    res.validators.forEach(v => {
-      if (v.account_id === validator_account_id) is_primary = true
-    })
-
-    const nodeInfo = {
-      ...res.sync_info,
-      validator_account_id,
-      version: res.version,
-      chain_id: res.chain_id,
-      protocol_version: res.protocol_version,
-      latest_protocol_version: res.latest_protocol_version,
-
-      // Booleans for basic checks:
-      out_of_date: res.latest_protocol_version > res.protocol_version,
-      is_primary,
-      is_syncing: res.sync_info.syncing,
-    }
-
     if (node_ip === NF_NODES[NEAR_ENV]) { nfNodes[node_ip] = nodeInfo }
     else if (node_ip === thisNode.ip) { thisNode = { ...thisNode, ...nodeInfo } }
     else { nodes[node_ip] = { ...nodeInfo } }
-
-    console.log('res.node === thisNode.ip', node_ip === thisNode.ip, node_ip, thisNode.ip)
   })
 
   console.log('nodes', nodes)
-  // console.log('nfNodes', nfNodes)
-  // console.log('thisNode', thisNode)
-  if (!Object.keys(nodes).length) return;
+  console.log('nfNodes', nfNodes)
+  console.log('thisNode', thisNode)
 
   // TODO: Check if neard/nearup process is active?
   // await daemon.processActive()
 
   // ALERT: low peer count
-  if (thisNode.log && thisNode.log.peers) {
-    const peers = thisNode.log.peers[0]
-    if (peers < LOW_PEER_THRESHOLD) slack.send({ text: `*${NEAR_ENV.toUpperCase()} ${REGION}* Low Peer Count: ${peers} Found!` })
+  if (typeof thisNode.peers !== 'undefined') {
+    const peers = thisNode.peers
+    if (peers < LOW_PEER_THRESHOLD) slack.send({ text: `*${NEAR_ENV.toUpperCase()} ${REGION}* Low Peer Count: ${peers} Connected, ${thisNode.peers_reachable} Reachable!` })
   }
 
   // ALERT: blocks falling behind
@@ -164,7 +134,7 @@ async function checkNodeState() {
   }
 
   // Ping Uptime Monitor
-  // if (UPTIME_SYSTEM_URL) uptime.ping({ uptimeUrl: UPTIME_SYSTEM_URL })
+  // if (UPTIME_SYNC_URL) uptime.ping({ uptimeUrl: UPTIME_SYNC_URL })
 }
 
 // GOOOOOO!!
