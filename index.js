@@ -34,7 +34,6 @@ const configuredNodes = [NF_NODES[NEAR_ENV]]
 
 // Add locally known nodes to the list to check
 if (NODES[NEAR_ENV]) NODES[NEAR_ENV].split(',').forEach(node => configuredNodes.push(node))
-console.log('configuredNodes', configuredNodes)
 
 // Restart changes the node from either validating to non-validating
 // This is done by switching which keys are active
@@ -109,12 +108,16 @@ async function checkNodeState() {
 
     if (res.node === thisNode.ip) thisNode = { ...thisNode, ...nodeInfo }
     else if (res.node = NF_NODES[NEAR_ENV]) nfNodes[res.node] = nodeInfo
-    else nodes[res.node] = nodeInfo
+    else {
+      console.log('HERE-------------', res.node, nodeInfo)
+      nodes[res.node] = nodeInfo
+    }
   })
 
   console.log('nodes', nodes)
-  console.log('nfNodes', nfNodes)
-  console.log('thisNode', thisNode)
+  // console.log('nfNodes', nfNodes)
+  // console.log('thisNode', thisNode)
+  if (!Object.keys(nodes).length) return;
 
   // TODO: Check if neard/nearup process is active?
   // await daemon.processActive()
