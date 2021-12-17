@@ -76,15 +76,16 @@ module.exports = {
     // TODO: Check against warnings and errors
     // split the logs up into line objects based on output
     logs.split('\n').forEach(line => {
+      console.log('line', line)
       const chunks = line.split('  ')
-      const blockData = chunks[1].split(' ')
-      const peerData = chunks[2].split(' ')
+      // const blockData = chunks[1].split(' ')
+      // const peerData = chunks[2].split(' ')
       output.push({
         timestamp: chunks[0],
-        block: `${blockData[2]}`.replace('#', ''),
-        blockHash: blockData[3],
-        is_validating: `${blockData[4]}`[0] === 'V',
-        peers: `${peerData[0]}`.split('/'),
+        // block: `${blockData[2]}`.replace('#', ''),
+        // blockHash: blockData[3],
+        // is_validating: `${blockData[4]}`[0] === 'V',
+        // peers: `${peerData[0]}`.split('/'),
       })
     })
 
