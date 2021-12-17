@@ -12,9 +12,11 @@ const writeKeyFile = async (suffix) => {
   const nodeKey = await fs.readFileSync(path.join(BASE_PATH, `node_key_${suffix}.json`))
   const validatorKey = await fs.readFileSync(path.join(BASE_PATH, `validator_key_${suffix}.json`))
 
+  console.log('CHANGE KEYS TO', suffix)
+  // TODO: Re-enable once safe!
   // write the key to active key
-  fs.writeFileSync(path.join(BASE_PATH, 'node_key.json'), nodeKey)
-  fs.writeFileSync(path.join(BASE_PATH, 'validator_key.json'), validatorKey)
+  // fs.writeFileSync(path.join(BASE_PATH, 'node_key.json'), nodeKey)
+  // fs.writeFileSync(path.join(BASE_PATH, 'validator_key.json'), validatorKey)
 }
 
 module.exports = {

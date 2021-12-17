@@ -158,6 +158,7 @@ async function checkNodeState() {
 
 // GOOOOOO!!
 ;(async () => {
+  console.log("IP", ip());
   const recurse = async () => {
     await checkNodeState()
     setTimeout(recurse, CHECK_INTERVAL)
