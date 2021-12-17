@@ -7,6 +7,7 @@ const keys = require("./keyHandler")
 const daemon = require("./daemonHandler")
 
 const NEAR_ENV = process.env.NEAR_ENV || 'testnet'
+const REGION = process.env.REGION || ''
 const CHECK_INTERVAL = process.env.CHECK_INTERVAL ? parseInt(process.env.CHECK_INTERVAL) : 30 * 1000
 const LOW_BLOCKS_THRESHOLD = process.env.LOW_BLOCKS_THRESHOLD ? parseInt(process.env.LOW_BLOCKS_THRESHOLD) : 200
 const LOW_PEER_THRESHOLD = process.env.LOW_PEER_THRESHOLD ? parseInt(process.env.LOW_PEER_THRESHOLD) : 5
@@ -52,7 +53,7 @@ async function restartNodeProcess(type = 'temp') {
   await daemon.start()
 
   // report
-  await slack.send({ text: `*${NEAR_ENV.toUpperCase()}* node changed to ${type} (${ip()})` })
+  await slack.send({ text: `*${NEAR_ENV.toUpperCase()} ${REGION}* node changed to ${type} complete. (${ip()})` })
 }
 
 // The main logic to check THIS node against comparison nodes
@@ -62,6 +63,7 @@ async function checkNodeState() {
   const thisNodeIp = await ip()
   let thisNode = { ip: thisNodeIp, key_is_primary }
   const latestLogs = daemon.parseLogs()
+  console.log('latestLogs', latestLogs)
   thisNode.log = latestLogs && latestLogs.length > 0 ? latestLogs[0] : null
   console.log('checkNodeState', thisNode)
 
@@ -82,6 +84,7 @@ async function checkNodeState() {
   results.forEach(res => {
     if (!res || !res.version) return;
     if (res.chain_id !== NEAR_ENV) return;
+    console.log('res', res)
 
     const nodeInfo = {
       ...res.sync_info,
@@ -94,7 +97,7 @@ async function checkNodeState() {
       // Booleans for basic checks:
       out_of_date: res.latest_protocol_version > res.protocol_version,
       is_syncing: res.sync_info.syncing,
-      is_primary: res.validator_account_id.search('sync') < 0,
+      is_primary: `${res.validator_account_id}`.search('sync') < 0,
     }
 
     if (res.node === thisNode.ip) thisNode = { ...thisNode, ...nodeInfo }

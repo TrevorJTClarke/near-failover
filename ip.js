@@ -21,7 +21,6 @@ module.exports = function() {
   Object.keys(results).forEach(r => {
     if (r.search('ens') > -1 && results[r].length > 0) ips.push(results[r][0])
   })
-  console.log('networkInterfaces results', ips)
   
   return ips[0] ? ips[0] : ''
 }
