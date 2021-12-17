@@ -3,7 +3,7 @@ require("dotenv").config()
 const NEAR_ENV = process.env.NEAR_ENV || 'testnet'
 
 module.exports = {
-  getState: async ip => {
+  getState: async node => {
     let nodeInfo = {}
     const node_domain = node.search('192') < 0 ? `https://${node}/` : `http://${node}:3030/`
     
