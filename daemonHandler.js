@@ -30,9 +30,9 @@ module.exports = {
     try {
       // TODO: re-enable!!!!!!!!!!!!!!!
       // await cmdPromise(cmd)
-      await slack.send({ text: `*${NEAR_ENV.toUpperCase()} ${REGION}* node stop triggered` })
+      await slack.send({ text: `[MANUAL] *${NEAR_ENV.toUpperCase()} ${REGION}* node stop triggered` })
     } catch (e) {
-      await slack.send({ text: `*${NEAR_ENV.toUpperCase()} ${REGION}* node stop trigger *FAILED*!` })
+      await slack.send({ text: `[MANUAL] *${NEAR_ENV.toUpperCase()} ${REGION}* node stop trigger *FAILED*!` })
     }
   },
   start: async () => {
@@ -40,9 +40,9 @@ module.exports = {
     try {
       // TODO: re-enable!!!!!!!!!!!!!!!
       // await cmdPromise(cmd)
-      await slack.send({ text: `*${NEAR_ENV.toUpperCase()} ${REGION}* node start triggered` })
+      await slack.send({ text: `[MANUAL] *${NEAR_ENV.toUpperCase()} ${REGION}* node start triggered` })
     } catch (e) {
-      await slack.send({ text: `*${NEAR_ENV.toUpperCase()} ${REGION}* node start trigger *FAILED*!` })
+      await slack.send({ text: `[MANUAL] *${NEAR_ENV.toUpperCase()} ${REGION}* node start trigger *FAILED*!` })
     }
   },
   getLogs,
@@ -51,23 +51,5 @@ module.exports = {
     const output = []
     if (!logs || logs.length < 1) return output;
     return logs.split('\n');
-    
-    // // TODO: Check against warnings and errors
-    // // split the logs up into line objects based on output
-    // logs.split('\n').forEach(line => {
-    //   console.log('line', line)
-    //   const chunks = line.split('  ')
-    //   // const blockData = chunks[1].split(' ')
-    //   // const peerData = chunks[2].split(' ')
-    //   output.push({
-    //     timestamp: chunks[0],
-    //     // block: `${blockData[2]}`.replace('#', ''),
-    //     // blockHash: blockData[3],
-    //     // is_validating: `${blockData[4]}`[0] === 'V',
-    //     // peers: `${peerData[0]}`.split('/'),
-    //   })
-    // })
-
-    // return output
   },
 }

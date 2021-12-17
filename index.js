@@ -11,8 +11,9 @@ const REGION = process.env.REGION || ''
 const CHECK_INTERVAL = process.env.CHECK_INTERVAL ? parseInt(process.env.CHECK_INTERVAL) : 30 * 1000
 const LOW_BLOCKS_THRESHOLD = process.env.LOW_BLOCKS_THRESHOLD ? parseInt(process.env.LOW_BLOCKS_THRESHOLD) : 200
 const LOW_PEER_THRESHOLD = process.env.LOW_PEER_THRESHOLD ? parseInt(process.env.LOW_PEER_THRESHOLD) : 5
-const UPTIME_SYSTEM_URL = process.env.UPTIME_SYSTEM_URL
+// const UPTIME_SYSTEM_URL = process.env.UPTIME_SYSTEM_URL
 const UPTIME_SYNC_URL = process.env.UPTIME_SYNC_URL
+const SLACK_LOG_CHANNEL = process.env.SLACK_LOG_CHANNEL ? process.env.SLACK_LOG_CHANNEL : null
 const SLACK_STATUS_INTERVAL = process.env.SLACK_STATUS_INTERVAL ? parseInt(process.env.SLACK_STATUS_INTERVAL) : 0
 
 const slack = new slackProvider({ slackToken: process.env.SLACK_TOKEN })
@@ -76,16 +77,18 @@ async function checkNodeState() {
 
   // based on responses, add to available nodes list
   results.forEach(res => {
-    console.log('res', res)
     const node_ip = res.node
     if (node_ip === NF_NODES[NEAR_ENV]) { nfNodes[node_ip] = res }
     else if (node_ip === thisNode.ip) { thisNode = { ...thisNode, ...res } }
     else { nodes[node_ip] = { ...res } }
   })
 
-  console.log('nodes', nodes)
-  console.log('nfNodes', nfNodes)
-  console.log('thisNode', thisNode)
+  // console.log('nodes', nodes)
+  // console.log('nfNodes', nfNodes)
+  // console.log('thisNode', thisNode)
+
+  // HELPFUL LOGGING:
+  console.log(`${new Date().toISOString()} ${NEAR_ENV.toUpperCase()} ${REGION} ${thisNode.validator_account_id} :: PRIMARY: ${thisNode.is_primary}/${thisNode.isValidating} SYNC: ${thisNode.syncing} P: ${thisNode.peers}/${thisNode.peers_reachable} BLK:${thisNode.latest_block_height}`)
 
   // TODO: Check if neard/nearup process is active?
   // await daemon.processActive()
@@ -133,13 +136,12 @@ async function checkNodeState() {
   }
 
   // Ping Uptime Monitor
-  // if (UPTIME_SYNC_URL) uptime.ping({ uptimeUrl: UPTIME_SYNC_URL })
+  if (UPTIME_SYNC_URL) uptime.ping({ uptimeUrl: UPTIME_SYNC_URL })
 }
 
 // GOOOOOO!!
 ;(async () => {
   const recurse = async () => {
-    console.log('STARTING CHECK NODE........')
     await checkNodeState()
     setTimeout(recurse, CHECK_INTERVAL)
   }
@@ -150,7 +152,9 @@ async function checkNodeState() {
   if (SLACK_STATUS_INTERVAL) {
     const slackPeriodicLogger = async () => {
       const latestLogs = await daemon.parseLogs()
-      await slack.send({ text: `*${NEAR_ENV.toUpperCase()} ${REGION}* Recent Log:\n${latestLogs[0]}` })
+      const payload = { text: `*${NEAR_ENV.toUpperCase()} ${REGION}* Recent Log:\n${latestLogs[0]}` }
+      if (SLACK_LOG_CHANNEL) payload.slackChannel = SLACK_LOG_CHANNEL
+      await slack.send(payload)
       setTimeout(recurse, SLACK_STATUS_INTERVAL)
     }
 
