@@ -13,7 +13,7 @@ const LOW_BLOCKS_THRESHOLD = process.env.LOW_BLOCKS_THRESHOLD ? parseInt(process
 const LOW_PEER_THRESHOLD = process.env.LOW_PEER_THRESHOLD ? parseInt(process.env.LOW_PEER_THRESHOLD) : 5
 const UPTIME_SYSTEM_URL = process.env.UPTIME_SYSTEM_URL
 const UPTIME_SYNC_URL = process.env.UPTIME_SYNC_URL
-const SLACK_STATUS_INTERVAL = process.env.SLACK_STATUS_INTERVAL ? parseInt(process.env.SLACK_STATUS_INTERVAL) : 60 * 60 * 1000
+const SLACK_STATUS_INTERVAL = process.env.SLACK_STATUS_INTERVAL ? parseInt(process.env.SLACK_STATUS_INTERVAL) : 0
 
 const slack = new slackProvider({ slackToken: process.env.SLACK_TOKEN })
 
@@ -70,7 +70,6 @@ async function checkNodeState() {
   const p = []
   configuredNodes.forEach(node => {
     const url = node.search('192') < 0 ? `https://${node}/status` : `http://${node}:3030/status`
-    console.log('PINGING: ', url)
     p.push(axios.get(url).then(res => {
       return { ...res.data, node }
     }))
@@ -109,10 +108,11 @@ async function checkNodeState() {
 
     if (res.node = NF_NODES[NEAR_ENV]) nfNodes[res.node] = nodeInfo
     else if (res.node === thisNode.ip) thisNode = { ...thisNode, ...nodeInfo }
-    else {
-      console.log('HERE-------------', res.node, nodeInfo)
-      nodes[res.node] = { ...nodeInfo }
-    }
+    // else {
+    //   console.log('HERE-------------', res.node, nodeInfo)
+    //   nodes[res.node] = { ...nodeInfo }
+    // }
+    nodes[res.node] = { ...nodeInfo }
   })
 
   console.log('nodes', nodes)
@@ -177,7 +177,16 @@ async function checkNodeState() {
     setTimeout(recurse, CHECK_INTERVAL)
   }
 
-  // - send periodic state updates to slack?
-
   recurse()
+
+  // send periodic state updates to slack?
+  if (SLACK_STATUS_INTERVAL) {
+    const slackPeriodicLogger = async () => {
+      const latestLogs = await daemon.parseLogs()
+      await slack.send({ text: `*${NEAR_ENV.toUpperCase()} ${REGION}* Recent Log:\n${latestLogs[0]}` })
+      setTimeout(recurse, SLACK_STATUS_INTERVAL)
+    }
+
+    slackPeriodicLogger()
+  }
 })()
