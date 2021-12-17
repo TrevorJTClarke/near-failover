@@ -34,6 +34,7 @@ const configuredNodes = [NF_NODES[NEAR_ENV]]
 
 // Add locally known nodes to the list to check
 if (NODES[NEAR_ENV]) NODES[NEAR_ENV].split(',').forEach(node => configuredNodes.push(node))
+console.log('configuredNodes', configuredNodes)
 
 // Restart changes the node from either validating to non-validating
 // This is done by switching which keys are active
@@ -62,7 +63,7 @@ async function checkNodeState() {
   const key_is_primary = await keys.isMain()
   const thisNodeIp = await ip()
   let thisNode = { ip: thisNodeIp, key_is_primary }
-  const latestLogs = daemon.parseLogs()
+  const latestLogs = await daemon.parseLogs()
   console.log('latestLogs', latestLogs)
   thisNode.log = latestLogs && latestLogs.length > 0 ? latestLogs[0] : null
   console.log('checkNodeState', thisNode)
@@ -72,6 +73,7 @@ async function checkNodeState() {
   const p = []
   configuredNodes.forEach(node => {
     const url = node.search('192') < 0 ? `https://${node}/status` : `http://${node}:3030/status`
+    console.log('PINGING: ', url)
     p.push(axios.get(url).then(res => {
       return { ...res.data, node }
     }))
