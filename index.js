@@ -84,11 +84,17 @@ async function checkNodeState() {
   results.forEach(res => {
     if (!res || !res.version) return;
     if (res.chain_id !== NEAR_ENV) return;
-    console.log('res', res)
+    const validator_account_id = res.validator_account_id
+    let is_primary = false
+
+    // check all validators to see if THIS account is validating
+    res.validators.forEach(v => {
+      if (v.account_id === validator_account_id) is_primary = true
+    })
 
     const nodeInfo = {
       ...res.sync_info,
-      validator_account_id: res.validator_account_id,
+      validator_account_id,
       version: res.version,
       chain_id: res.chain_id,
       protocol_version: res.protocol_version,
@@ -96,8 +102,8 @@ async function checkNodeState() {
 
       // Booleans for basic checks:
       out_of_date: res.latest_protocol_version > res.protocol_version,
+      is_primary,
       is_syncing: res.sync_info.syncing,
-      is_primary: `${res.validator_account_id}`.search('sync') < 0,
     }
 
     if (res.node === thisNode.ip) thisNode = { ...thisNode, ...nodeInfo }
@@ -114,7 +120,7 @@ async function checkNodeState() {
   // ALERT: low peer count
   if (thisNode.log && thisNode.log.peers) {
     const peers = thisNode.log.peers[0]
-    if (peers < LOW_PEER_THRESHOLD) slack.send({ text: `*${NEAR_ENV.toUpperCase()}* Low Peer Count: ${peers} Found! (${thisNode.ip})` })
+    if (peers < LOW_PEER_THRESHOLD) slack.send({ text: `*${NEAR_ENV.toUpperCase()} ${REGION}* Low Peer Count: ${peers} Found!` })
   }
 
   // ALERT: blocks falling behind
@@ -124,7 +130,7 @@ async function checkNodeState() {
   })
   if (highestBlockHeight > thisNode.latest_block_height + LOW_BLOCKS_THRESHOLD) {
     const blocksBehind = highestBlockHeight - thisNode.latest_block_height
-    slack.send({ text: `*${NEAR_ENV.toUpperCase()}* Block Height Falling Behind: ${blocksBehind} Blocks Behind! (${thisNode.ip})` })
+    slack.send({ text: `*${NEAR_ENV.toUpperCase()} ${REGION}* Block Height Falling Behind: ${blocksBehind} Blocks Behind!` })
   } else {
     // we're not behind, ping the sync uptime to stop it from alerting
     if (UPTIME_SYNC_URL) uptime.ping({ uptimeUrl: UPTIME_SYNC_URL })
