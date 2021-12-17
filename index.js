@@ -88,7 +88,7 @@ async function checkNodeState() {
   // console.log('thisNode', thisNode)
 
   // HELPFUL LOGGING:
-  console.log(`${new Date().toISOString()} ${NEAR_ENV.toUpperCase()} ${REGION} ${thisNode.validator_account_id} :: PRIMARY: ${thisNode.is_primary}/${thisNode.isValidating} SYNC: ${thisNode.syncing} P: ${thisNode.peers}/${thisNode.peers_reachable} BLK:${thisNode.latest_block_height}`)
+  console.log(`${new Date().toISOString()} ${NEAR_ENV.toUpperCase()} ${REGION} (${thisNode.validator_account_id}) :: ${thisNode.isValidating ? 'VALIDATOR' : 'SYNC'} :: PEERS: ${thisNode.peers}/${thisNode.peers_reachable} BLK:${thisNode.latest_block_height} BLOCKSYNC: ${thisNode.syncing} `)
 
   // TODO: Check if neard/nearup process is active?
   // await daemon.processActive()
@@ -107,9 +107,6 @@ async function checkNodeState() {
   if (highestBlockHeight > thisNode.latest_block_height + LOW_BLOCKS_THRESHOLD) {
     const blocksBehind = highestBlockHeight - thisNode.latest_block_height
     slack.send({ text: `*${NEAR_ENV.toUpperCase()} ${REGION}* Block Height Falling Behind: ${blocksBehind} Blocks Behind!` })
-  } else {
-    // we're not behind, ping the sync uptime to stop it from alerting
-    if (UPTIME_SYNC_URL) uptime.ping({ uptimeUrl: UPTIME_SYNC_URL })
   }
 
   const validatingNodes = []
