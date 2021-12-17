@@ -79,9 +79,9 @@ async function checkNodeState() {
   results.forEach(res => {
     console.log('res', res)
     const node_ip = res.node
-    if (node_ip === NF_NODES[NEAR_ENV]) { nfNodes[node_ip] = nodeInfo }
-    else if (node_ip === thisNode.ip) { thisNode = { ...thisNode, ...nodeInfo } }
-    else { nodes[node_ip] = { ...nodeInfo } }
+    if (node_ip === NF_NODES[NEAR_ENV]) { nfNodes[node_ip] = res }
+    else if (node_ip === thisNode.ip) { thisNode = { ...thisNode, ...res } }
+    else { nodes[node_ip] = { ...res } }
   })
 
   console.log('nodes', nodes)
