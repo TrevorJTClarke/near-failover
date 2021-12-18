@@ -14,8 +14,8 @@ A utility for maintaining neard nodes across regions. This code is responsible f
 ### 1. Install
 
 ```bash
-npm i
-sudo npm start
+sudo npm i
+npm start
 ```
 
 NOTE: Needs sudo for install of systemctl process.
