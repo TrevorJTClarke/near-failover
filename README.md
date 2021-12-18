@@ -4,12 +4,12 @@ A utility for maintaining neard nodes across regions. This code is responsible f
 
 #### Key features:
 
-✅ Leader Election
-✅ Automated Key Management
-✅ Advanced Alerting & Warnings (Slack)
-✅ Uptime Reporting
-✅ Multi-region Multi-node Compare
-✅ Remote Logging
+- ✅ Leader Election
+- ✅ Automated Key Management
+- ✅ Advanced Alerting & Warnings (Slack)
+- ✅ Uptime Reporting
+- ✅ Multi-region Multi-node Compare
+- ✅ Remote Logging
 
 ### 1. Install
 
