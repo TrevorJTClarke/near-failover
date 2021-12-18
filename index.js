@@ -160,7 +160,7 @@ async function checkNodeState() {
       const payload = { text: `*${NEAR_ENV.toUpperCase()} ${REGION}* Recent Log:\n${latestLogs[0]}` }
       if (SLACK_LOG_CHANNEL) payload.slackChannel = SLACK_LOG_CHANNEL
       await slack.send(payload)
-      setTimeout(recurse, SLACK_STATUS_INTERVAL)
+      setTimeout(slackPeriodicLogger, SLACK_STATUS_INTERVAL)
     }
 
     slackPeriodicLogger()
