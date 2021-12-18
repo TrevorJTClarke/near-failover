@@ -8,5 +8,7 @@ echo "
 cp -b .env.example .env
 
 # setup the service
-cp -b nearfailover.service /etc/systemd/system/nearfailover.service
-sudo systemctl enable nearfailover
+sudo systemctl link ~/near-failover/nearfailover.service
+sudo systemctl enable nearfailover.service
+sudo systemctl daemon-reload
+sudo systemctl start nearfailover.service
