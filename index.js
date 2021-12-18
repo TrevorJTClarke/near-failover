@@ -60,6 +60,9 @@ async function restartNodeProcess(type = 'temp') {
 // TODO: Check that logic can sustain all nodes not validating because of kicked or non-ping
 // The main logic to check THIS node against comparison nodes
 async function checkNodeState() {
+  // Keep track of if we should SKIP uptime reporting, to trigger an alarm
+  let skipUptimeCall = false
+
   // Get the context of THIS node for later comparison.
   const key_is_primary = await keys.isMain()
   const thisNodeIp = await ip()
@@ -96,7 +99,11 @@ async function checkNodeState() {
   // ALERT: low peer count
   if (typeof thisNode.peers !== 'undefined') {
     const peers = thisNode.peers
-    if (peers < LOW_PEER_THRESHOLD) slack.send({ text: `*${NEAR_ENV.toUpperCase()} ${REGION}* Low Peer Count: ${peers} Connected, ${thisNode.peers_reachable} Reachable!` })
+    if (peers < LOW_PEER_THRESHOLD) {
+      slack.send({ text: `*${NEAR_ENV.toUpperCase()} ${REGION}* Low Peer Count: ${peers} Connected, ${thisNode.peers_reachable} Reachable!` })
+      // TODO: Assess if this is too scary or should not do this.
+      skipUptimeCall = true
+    }
   }
 
   // ALERT: blocks falling behind
@@ -107,6 +114,7 @@ async function checkNodeState() {
   if (highestBlockHeight > thisNode.latest_block_height + LOW_BLOCKS_THRESHOLD) {
     const blocksBehind = highestBlockHeight - thisNode.latest_block_height
     slack.send({ text: `*${NEAR_ENV.toUpperCase()} ${REGION}* Block Height Falling Behind: ${blocksBehind} Blocks Behind!` })
+    skipUptimeCall = true
   }
 
   const validatingNodes = []
@@ -133,7 +141,7 @@ async function checkNodeState() {
   }
 
   // Ping Uptime Monitor
-  if (UPTIME_SYNC_URL) uptime.ping({ uptimeUrl: UPTIME_SYNC_URL })
+  if (UPTIME_SYNC_URL && skipUptimeCall !== true) uptime.ping({ uptimeUrl: UPTIME_SYNC_URL })
 }
 
 // GOOOOOO!!
