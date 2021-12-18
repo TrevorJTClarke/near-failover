@@ -1,5 +1,15 @@
 # near-failover
-failover scripts
+
+A utility for maintaining neard nodes across regions. This code is responsible for watching all nodes, checking its status & metrics to make decisions about leader election. This allows failover in the event issues occur on a primary validating node.
+
+#### Key features:
+
+✅ Leader Election
+✅ Automated Key Management
+✅ Advanced Alerting & Warnings (Slack)
+✅ Uptime Reporting
+✅ Multi-region Multi-node Compare
+✅ Remote Logging
 
 ### 1. Install
 
