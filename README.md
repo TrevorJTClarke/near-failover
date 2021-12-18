@@ -13,9 +13,22 @@ A utility for maintaining neard nodes across regions. This code is responsible f
 
 ### 1. Install
 
+Install without systemctl:
+
 ```bash
-sudo npm i
+npm i
+
+# Configure your .env before proceeding
 npm start
+```
+
+Install **with** systemctl:
+
+```bash
+npm i
+
+# Configure your .env before proceeding
+sudo ./setup.sh
 ```
 
 NOTE: Needs sudo for install of systemctl process.

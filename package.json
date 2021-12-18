@@ -4,7 +4,7 @@
   "description": "failover scripts",
   "main": "index.js",
   "scripts": {
-    "postinstall": "./setup.sh",
+    "postinstall": "cp -b .env.example .env",
     "start": "node index",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

@@ -5,8 +5,6 @@ echo "
 +----------------------------------------------------------------------
 ";
 
-cp -b .env.example .env
-
 # setup the service
 sudo systemctl link ~/near-failover/nearfailover.service
 sudo systemctl enable nearfailover.service
