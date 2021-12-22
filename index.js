@@ -41,20 +41,21 @@ if (NODES[NEAR_ENV]) NODES[NEAR_ENV].split(',').forEach(node => configuredNodes.
 // OPTIONS:
 // - type: {temp, main}(default: temp)
 async function restartNodeProcess(type = 'temp') {
-  // TODO: Check if neard/nearup process is active?
-  // await daemon.processActive()
-  // stop process
-  await daemon.stop()
+  // TODO: RE-ENABLE!!!!!!!!!!!!!! currently just testing the crap out of it until happy
+  // // TODO: Check if neard/nearup process is active?
+  // // await daemon.processActive()
+  // // stop process
+  // await daemon.stop()
 
-  // TODO: Error handle this!
-  // replace keys
-  await keys[type]()
+  // // TODO: Error handle this!
+  // // replace keys
+  // await keys[type]()
 
-  // start process
-  await daemon.start()
+  // // start process
+  // await daemon.start()
 
   // report
-  await slack.send({ text: `*${NEAR_ENV.toUpperCase()} ${REGION}* node changed to ${type} complete.` })
+  await slack.send({ text: `[TEST] *${NEAR_ENV.toUpperCase()} ${REGION}* node changed to ${type} complete.` })
 }
 
 // TODO: Check that logic can sustain all nodes not validating because of kicked or non-ping

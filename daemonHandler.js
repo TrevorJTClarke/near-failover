@@ -28,21 +28,19 @@ module.exports = {
   stop: async () => {
     const cmd = isMainnet ? 'sudo systemctl stop neard' : 'nearup stop'
     try {
-      // TODO: re-enable!!!!!!!!!!!!!!!
-      // await cmdPromise(cmd)
-      await slack.send({ text: `[MANUAL] *${NEAR_ENV.toUpperCase()} ${REGION}* node stop triggered` })
+      await cmdPromise(cmd)
+      await slack.send({ text: `*${NEAR_ENV.toUpperCase()} ${REGION}* node stop triggered` })
     } catch (e) {
-      await slack.send({ text: `[MANUAL] *${NEAR_ENV.toUpperCase()} ${REGION}* node stop trigger *FAILED*!` })
+      await slack.send({ text: `*${NEAR_ENV.toUpperCase()} ${REGION}* node stop trigger *FAILED*!` })
     }
   },
   start: async () => {
     const cmd = isMainnet ? 'sudo systemctl start neard' : `nearup run ${NEAR_ENV} --home /data`
     try {
-      // TODO: re-enable!!!!!!!!!!!!!!!
-      // await cmdPromise(cmd)
-      await slack.send({ text: `[MANUAL] *${NEAR_ENV.toUpperCase()} ${REGION}* node start triggered` })
+      await cmdPromise(cmd)
+      await slack.send({ text: `*${NEAR_ENV.toUpperCase()} ${REGION}* node start triggered` })
     } catch (e) {
-      await slack.send({ text: `[MANUAL] *${NEAR_ENV.toUpperCase()} ${REGION}* node start trigger *FAILED*!` })
+      await slack.send({ text: `*${NEAR_ENV.toUpperCase()} ${REGION}* node start trigger *FAILED*!` })
     }
   },
   getLogs,

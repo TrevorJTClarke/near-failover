@@ -74,6 +74,14 @@ SLACK_LOG_CHANNEL=
 SLACK_STATUS_INTERVAL=600000
 ```
 
+### 2. B - Key backups
+
+**IMPORTANT!** If you haven't setup failover keys yet, please do the following command to automatically create, configure & backup your keys:
+
+```bash
+npm run keys
+```
+
 ### 3. Start
 
 If you didn't install the systemctl, you can start the service like this:
@@ -96,6 +104,18 @@ tail -f ~/near-failover/failover.log
 tail -f ~/near-failover/failovererror.log
 ```
 
-### 4. Support us!
+## Manual Maintenance
+
+If you want to manually trigger a node becoming a validator or syncing node, you can do 1 of the following:
+
+```bash
+# For moving into validator node
+npm run validator
+
+# For moving into syncing node
+npm run sync
+```
+
+### Support us!
 
 If you found this useful, consider staking with our validator: `steak.poolv1.near` or making a donation to our DAO: `near send YOUR_ACCOUNT.near steakdao.sputnik-dao.near 5`

@@ -1,11 +1,14 @@
 {
   "name": "near-failover",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "failover scripts",
   "main": "index.js",
   "scripts": {
     "postinstall": "cp -b .env.example .env",
     "start": "node index",
+    "keys": "node setupKeys.js",
+    "sync": "node changeToTemp.js",
+    "validator": "node changeToMain.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
