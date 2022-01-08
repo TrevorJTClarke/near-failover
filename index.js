@@ -1,10 +1,10 @@
 require("dotenv").config()
-const slackProvider = require("./slack")
-const uptime = require("./uptime")
-const ip = require("./ip")
-const nodeStatus = require("./nodeStatus")
-const keys = require("./keyHandler")
-const daemon = require("./daemonHandler")
+const slackProvider = require("./src/slack")
+const uptime = require("./src/uptime")
+const ip = require("./src/ip")
+const nodeStatus = require("./src/nodeStatus")
+const keys = require("./src/keyHandler")
+const daemon = require("./src/daemonHandler")
 
 const NEAR_ENV = process.env.NEAR_ENV || 'testnet'
 const REGION = process.env.REGION || ''

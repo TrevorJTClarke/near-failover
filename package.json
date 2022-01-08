@@ -6,9 +6,11 @@
   "scripts": {
     "postinstall": "cp -b .env.example .env",
     "start": "node index",
-    "keys": "node setupKeys.js",
-    "sync": "node changeToTemp.js",
-    "validator": "node changeToMain.js",
+    "keys": "node src/setupKeys.js",
+    "sync": "node src/changeToTemp.js",
+    "validator": "node src/changeToMain.js",
+    "report": "node reporting.js",
+    "calc_apr": "node reward_calc.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -23,6 +25,7 @@
   "homepage": "https://github.com/TrevorJTClarke/near-failover#readme",
   "dependencies": {
     "axios": "^0.24.0",
+    "big.js": "^6.1.1",
     "dotenv": "^10.0.0",
     "near-api-js": "^0.44.1"
   }
