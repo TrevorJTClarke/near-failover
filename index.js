@@ -1,10 +1,10 @@
 require("dotenv").config()
-const slackProvider = require("./slack")
-const uptime = require("./uptime")
-const ip = require("./ip")
-const nodeStatus = require("./nodeStatus")
-const keys = require("./keyHandler")
-const daemon = require("./daemonHandler")
+const slackProvider = require("./src/slack")
+const uptime = require("./src/uptime")
+const ip = require("./src/ip")
+const nodeStatus = require("./src/nodeStatus")
+const keys = require("./src/keyHandler")
+const daemon = require("./src/daemonHandler")
 
 const NEAR_ENV = process.env.NEAR_ENV || 'testnet'
 const REGION = process.env.REGION || ''
@@ -158,7 +158,9 @@ async function checkNodeState() {
   if (SLACK_STATUS_INTERVAL) {
     const slackPeriodicLogger = async () => {
       const latestLogs = await daemon.parseLogs()
-      const payload = { text: `*${NEAR_ENV.toUpperCase()} ${REGION}* Recent Log:\n${latestLogs[0]}` }
+      // Strip the ansi coloring
+      const lastLog = `${latestLogs[0]}`.replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, '')
+      const payload = { text: `*${NEAR_ENV.toUpperCase()} ${REGION}* Recent Log:\n${lastLog}` }
       if (SLACK_LOG_CHANNEL) payload.slackChannel = SLACK_LOG_CHANNEL
       await slack.send(payload)
       setTimeout(slackPeriodicLogger, SLACK_STATUS_INTERVAL)
