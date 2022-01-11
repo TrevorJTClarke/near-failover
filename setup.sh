@@ -5,6 +5,7 @@ echo "
 +----------------------------------------------------------------------
 ";
 
+# sudo rm /etc/systemd/system/nearfailover.service
 # setup the service
 sudo systemctl link ~/near-failover/src/nearfailover.service
 sudo systemctl enable nearfailover.service

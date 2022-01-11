@@ -17,6 +17,7 @@ Install without systemctl:
 
 ```bash
 npm i
+cp .env.example .env
 
 # Configure your .env before proceeding
 npm start
@@ -26,6 +27,7 @@ Install **with** systemctl:
 
 ```bash
 npm i
+cp .env.example .env
 
 # Configure your .env before proceeding
 sudo ./setup.sh

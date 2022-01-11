@@ -4,7 +4,6 @@
   "description": "failover scripts",
   "main": "index.js",
   "scripts": {
-    "postinstall": "cp -b .env.example .env",
     "start": "node index",
     "keys": "node src/setupKeys.js",
     "sync": "node src/changeToTemp.js",
