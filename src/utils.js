@@ -1,5 +1,7 @@
 require("dotenv").config()
 const axios = require("axios")
+const Big = require("big.js")
+const { utils } = require("near-api-js")
 const ip = require("./ip")
 
 const NEAR_ENV = process.env.NEAR_ENV || 'testnet'
@@ -28,14 +30,34 @@ const atob = (base64) => {
   return Buffer.from(base64, 'base64').toString('utf8')
 }
 
+const addCommas = num => {
+  let str = num.toString().split('.')
+  str[0] = str[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  return str.join('.')
+}
+
 const getNearPrice = async () => {
   const currency = `${CURRENCY}`.toLowerCase()
   try {
     const { data } = await axios.get(`https://api.coingecko.com/api/v3/simple/price?ids=near&vs_currencies=${currency}`)
-    return data && data.near && data.near[currency] ? parseInt(data.near[currency]) : 0
+    return data && data.near && data.near[currency] ? parseFloat(data.near[currency]) : 0
   } catch (e) {
     return 0
   }
+}
+
+const yoctoToNear = (yocto, decimals = 4) => {
+  if (!yocto) return '0'
+  return utils.format.formatNearAmount(`${yocto}`, decimals)
+}
+
+const yoctoToPrice = (yocto, price) => {
+  if (!yocto || !price) return '0'
+  // const amt = yoctoToNear(yocto)
+  // console.log('HEREamt', amt, yocto, price)
+  const amt = Big(`${yocto}`).div('1e24')
+  const total = amt.times(`${price}`).toFixed(2)
+  return total
 }
 
 const queryRpc = async (data, method = 'query') => {
@@ -64,7 +86,10 @@ const queryRpc = async (data, method = 'query') => {
 module.exports = {
   btoa,
   atob,
+  addCommas,
   getNearPrice,
+  yoctoToNear,
+  yoctoToPrice,
   queryRpc,
   viewContract: async (contract, method, args) => {
     let res
