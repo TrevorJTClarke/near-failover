@@ -47,6 +47,10 @@ You will need to configure the following env variables:
 # Options: mainnet, testnet, guildnet
 NEAR_ENV=guildnet
 REGION=CA
+CURRENCY=USD
+
+# Where your /data folder is
+BASE_PATH=
 
 NF_MAINNET_NODE=rpc.mainnet.near.org
 NF_GUILDNET_NODE=rpc.openshards.io
@@ -59,8 +63,15 @@ NODES_TESTNET=""
 NODES_GUILDNET=""
 NODES_BETANET=""
 
+# Your staking contract for each network, for reporting
+STAKE_CONTRACT_MAINNET=""
+STAKE_CONTRACT_TESTNET=""
+STAKE_CONTRACT_GUILDNET=""
+STAKE_CONTRACT_BETANET=""
+
 # Interval in millis
 CHECK_INTERVAL=25000
+REPORT_INTERVAL=21600000
 LOW_BLOCKS_THRESHOLD=200
 LOW_PEER_THRESHOLD=10
 
@@ -72,6 +83,7 @@ UPTIME_SYNC_URL=
 SLACK_TOKEN=
 SLACK_CHANNEL=
 SLACK_LOG_CHANNEL=
+SLACK_REPORT_CHANNEL=
 # 10 mins
 SLACK_STATUS_INTERVAL=600000
 ```
