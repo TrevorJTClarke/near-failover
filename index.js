@@ -159,7 +159,7 @@ async function checkNodeState() {
     const slackPeriodicLogger = async () => {
       const latestLogs = await daemon.parseLogs()
       // Strip the ansi coloring
-      const lastLog = `${latestLogs[0]}`.replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, '')
+      const lastLog = `${latestLogs[latestLogs.length - 1]}`.replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, '')
       const payload = { text: `*${NEAR_ENV.toUpperCase()} ${REGION}* Recent Log:\n${lastLog}` }
       if (SLACK_LOG_CHANNEL) payload.slackChannel = SLACK_LOG_CHANNEL
       await slack.send(payload)

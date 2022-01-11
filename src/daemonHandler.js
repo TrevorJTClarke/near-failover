@@ -10,7 +10,7 @@ const REGION = process.env.REGION || ''
 const slack = new slackProvider({ slackToken: process.env.SLACK_TOKEN })
 
 const getLogs = async (lines = 1) => {
-  const cmd = isMainnet ? `tail -n ${lines} ~/.near/neard.log` : `tail -n ${lines} ~/.nearup/logs/${NEAR_ENV}.log`
+  const cmd = isMainnet ? `journalctl -n 10 -u neard` : `tail -n ${lines} ~/.nearup/logs/${NEAR_ENV}.log`
   const { stdout } = await exec(cmd)
   return stdout
 }
@@ -48,6 +48,6 @@ module.exports = {
     const logs = await getLogs(lines)
     const output = []
     if (!logs || logs.length < 1) return output;
-    return logs.split('\n');
+    return logs.split('\n').filter(l => l.length > 1);
   },
 }
