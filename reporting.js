@@ -132,10 +132,10 @@ const computeReport = async () => {
 
   // Calc offset stats
   const delegations_new = prevDelegators ? delegators.length - prevDelegators.length : 0
-  const stake_new = prevAccount && prevAccount.locked ? util.yoctoToNear(Big(account.locked).minus(prevAccount.locked).valueOf()) : 0
+  const stake_new = prevAccount && prevAccount.locked ? util.yoctoToNear(`${Big(account.locked).minus(prevAccount.locked).valueOf()}`) : 0
   const rewards_current_epoch = prev_owner_account && prev_owner_account.staked_balance ? Big(owner_account.staked_balance).minus(prev_owner_account.staked_balance) : 0
-  const rewards_epoch = rewards_current_epoch ? util.yoctoToNear(rewards_current_epoch.valueOf()) : 0
-  const rewards_epoch_currency = rewards_epoch ? util.addCommas(util.yoctoToPrice(rewards_current_epoch.valueOf(), nearPrice)) : ''
+  const rewards_epoch = rewards_current_epoch ? util.yoctoToNear(`${rewards_current_epoch.valueOf()}`) : 0
+  const rewards_epoch_currency = rewards_epoch ? util.addCommas(util.yoctoToPrice(`${rewards_current_epoch.valueOf()}`, nearPrice)) : ''
 
   // Format raw data for report
   const reportData = {
