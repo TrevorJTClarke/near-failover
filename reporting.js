@@ -174,7 +174,7 @@ const computeReport = async () => {
 
 // GOOOOOO!!
 ;(async () => {
-  await computeReport()
+  // await computeReport()
 
   const recurse = async () => {
     await computeReport()
