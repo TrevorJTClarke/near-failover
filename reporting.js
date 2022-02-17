@@ -6,7 +6,7 @@ const slackProvider = require("./src/slack")
 const NEAR_ENV = process.env.NEAR_ENV || 'testnet'
 const CURRENCY = process.env.CURRENCY || 'USD'
 const SLACK_REPORT_CHANNEL = process.env.SLACK_REPORT_CHANNEL || null
-const REPORT_INTERVAL = process.env.REPORT_INTERVAL && process.env.REPORT_INTERVAL !== '0' ? parseInt(process.env.REPORT_INTERVAL) : 12 * 1 * 60 * 60 * 1000
+const REPORT_INTERVAL = process.env.REPORT_INTERVAL && process.env.REPORT_INTERVAL !== '0' ? parseInt(process.env.REPORT_INTERVAL) : 3 * 1 * 60 * 60 * 1000
 
 const slack = new slackProvider({ slackToken: process.env.SLACK_TOKEN })
 let prevValidatorStats = {}
@@ -68,12 +68,13 @@ const generateReportMessage = data => {
 }
 
 const computeReport = async () => {
+  console.log('RUNNING NEW REPORT')
   // Get all the raw data:
   const nearPrice = await util.getNearPrice()
   const contract = STAKECONTRACTS[NEAR_ENV]
   const owner = await util.viewContract(contract, 'get_owner_id')
   const account = await util.getAccount(contract)
-  const delegators = await util.viewContract(contract, 'get_accounts', { from_index: 0, limit: 100 })
+  const delegators = await util.viewContract(contract, 'get_accounts', { from_index: 0, limit: 250 })
   let owner_account
   let prev_owner_account
   if (!delegators) return;
@@ -154,7 +155,7 @@ const computeReport = async () => {
     rewards_unstaking: util.yoctoToNear(owner_account.unstaked_balance),
     rewards_can_withdraw: owner_account.can_withdraw,
     rewards_staked_currency: util.addCommas(util.yoctoToPrice(owner_account.staked_balance, nearPrice)),
-    uptime_percent: ((parseInt(myStats.num_produced_blocks) / parseInt(myStats.num_expected_blocks)) * 100).toFixed(2), // TODO:
+    uptime_percent: ((parseInt(myStats.num_produced_blocks) / parseInt(myStats.num_expected_blocks)) * 100).toFixed(2),
     uptime_produced: myStats.num_produced_blocks,
     uptime_expected: myStats.num_expected_blocks,
     near_currency: nearPrice.toFixed(2),
@@ -178,7 +179,7 @@ const computeReport = async () => {
 
   const recurse = async () => {
     await computeReport()
-    setTimeout(recurse, REPORT_INTERVAL)
+    setTimeout(() => { recurse() }, REPORT_INTERVAL)
   }
 
   recurse()
